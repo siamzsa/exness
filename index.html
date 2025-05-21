@@ -16,93 +16,185 @@ replaceAndStyleText(document.body);
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Premium License Verification</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cortex Home - License Check</title>
   <style>
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #eef2f7;
     }
-    .spinner {
-      border-top-color: #3b82f6;
-      animation: spin 1s linear infinite;
+    /* হোমপেজ কনটেন্ট */
+    #homepageContent {
+      padding: 40px;
+      text-align: center;
     }
+
+    /* মডাল ব্যাকগ্রাউন্ড */
+    #licenseModalBackdrop {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    }
+
+    /* তোমার আগের ডিজাইন স্টাইল মডাল বক্সে */
+    #licenseModal {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      width: 360px;
+      text-align: center;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    #licenseModal h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    #licenseModal h2 {
+      margin-top: 5px;
+      font-size: 16px;
+      color: #007bff;
+    }
+    .instruction {
+      font-size: 14px;
+      margin: 20px 0 10px;
+      color: #333;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+    }
+    .button-group button {
+      width: 48%;
+      padding: 10px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      transform: scale(1);
+    }
+    .verify-btn {
+      background-color: #007bff;
+      color: white;
+    }
+    .verify-btn:hover {
+      background-color: #0056b3;
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    }
+    .cancel-btn {
+      background-color: #6c757d;
+      color: white;
+    }
+    .cancel-btn:hover {
+      background-color: #5a6268;
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+    }
+    .footer {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #555;
+    }
+    .footer a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .telegram-icon {
+      width: 20px;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+    #message {
+      margin-top: 15px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .success { color: green; }
+    .error { color: red; }
   </style>
 </head>
-<body class="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen flex items-center justify-center p-4">
+<body>
 
-  <div class="w-full max-w-sm bg-white/10 backdrop-blur-md rounded-2xl shadow-xl p-6 fade-in border border-white/10">
-    <h2 class="text-2xl font-semibold text-white text-center mb-5 flex justify-center items-center gap-2">
-      <i data-lucide="lock" class="w-6 h-6 text-blue-400"></i>
-      License Verification
-    </h2>
-    
-    <form id="licenseForm" class="space-y-4">
-      <input
-        id="licenseKey"
-        type="text"
-        placeholder="Enter your license key"
-        class="w-full px-4 py-2 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-blue-500"
-        required
-      />
+<div id="homepageContent">
+  <h1>Welcome to Cortex Home Page</h1>
+  <p>This is your main homepage content. It will be visible behind the license modal.</p>
+</div>
 
-      <button
-        type="submit"
-        id="verifyBtn"
-        class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition duration-200"
-      >
-        Verify License
-      </button>
-    </form>
-
-    <!-- Spinner -->
-    <div id="spinnerBox" class="hidden flex justify-center mt-5">
-      <div class="w-10 h-10 rounded-full border-4 border-white spinner"></div>
+<div id="licenseModalBackdrop">
+  <div id="licenseModal">
+    <h1>UI Script</h1>
+    <h2>By Trader Siam X</h2>
+    <div class="instruction">Enter your license key to continue</div>
+    <div style="font-size: 13px; color: #777;">This will authorize your device for system access</div>
+    <input type="text" id="licenseKey" placeholder="Enter license key...">
+    <div class="button-group">
+      <button class="verify-btn" onclick="verifyLicense()">Verify License</button>
+      <button class="cancel-btn" onclick="clearInput()">Cancel</button>
     </div>
-
-    <!-- Message -->
-    <div id="message" class="text-center text-white mt-4 font-medium"></div>
+    <div id="message"></div>
+    <div class="footer">
+      <div style="margin-top: 15px;">
+        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" class="telegram-icon" alt="Telegram">
+        <a href="https://t.me/TRADERSIAMX" target="_blank">Contact @TRADERSIAMX</a>
+      </div>
+      <div style="margin-top: 5px;">By Trader Siam X</div>
+    </div>
   </div>
+</div>
 
-  <script>
-    lucide.createIcons();
+<script>
+  const demoKey = "DEMO-1234-KEY";
+  const modalBackdrop = document.getElementById("licenseModalBackdrop");
+  const message = document.getElementById("message");
+  const licenseInput = document.getElementById("licenseKey");
 
-    const form = document.getElementById('licenseForm');
-    const message = document.getElementById('message');
-    const spinnerBox = document.getElementById('spinnerBox');
-    const verifyBtn = document.getElementById('verifyBtn');
+  function verifyLicense() {
+    const key = licenseInput.value.trim();
+    if (key === demoKey) {
+      message.textContent = "License Verified Successfully!";
+      message.className = "success";
 
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      const key = document.getElementById('licenseKey').value.trim();
-
-      // Show spinner
-      spinnerBox.classList.remove('hidden');
-      message.textContent = '';
-      verifyBtn.disabled = true;
-
-      // Simulate 1 second delay
+      // 1. 1.5 সেকেন্ড মেসেজ দেখাবে
+      // 2. তারপর মডাল ধীরে ধীরে fade out করে লুকাবে
       setTimeout(() => {
-        spinnerBox.classList.add('hidden');
-        verifyBtn.disabled = false;
+        modalBackdrop.style.transition = "opacity 0.5s ease";
+        modalBackdrop.style.opacity = "0";
+        setTimeout(() => {
+          modalBackdrop.style.display = "none";
+        }, 500);
+      }, 1500);
+    } else {
+      message.textContent = "Invalid License Key";
+      message.className = "error";
+    }
+  }
 
-        if (key === "DEMO-1234-VALID") {
-          message.innerHTML = `
-            <span class="inline-flex items-center gap-1 text-green-400">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block" viewBox="0 0 24 24" fill="#1d9bf0">
-                <circle cx="12" cy="12" r="10" fill="#1d9bf0"/>
-                <path fill="white" d="M10.5 13.5l-2-2 1.4-1.4 0.6 0.6 3.5-3.5 1.4 1.4-5 5z"/>
-              </svg>
-              License verified successfully!
-            </span>
-          `;
-        } else {
-          message.innerHTML = `<span class="text-red-400">❌ Invalid license key. Please try again.</span>`;
-        }
-      }, 1000);
-    });
-  </script>
+  function clearInput() {
+    licenseInput.value = "";
+    message.textContent = "";
+    message.className = "";
+  }
+</script>
+
 </body>
 </html>
