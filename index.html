@@ -12,50 +12,38 @@ function replaceAndStyleText(node) {
   }
 }
 replaceAndStyleText(document.body);
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Cortex Home - License Check</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #eef2f7;
-    }
-    /* হোমপেজ কনটেন্ট */
-    #homepageContent {
-      padding: 40px;
-      text-align: center;
-    }
-
-    /* মডাল ব্যাকগ্রাউন্ড */
+(() => {
+  if(document.getElementById('licenseModalBackdrop')) {
+    alert("License modal already exists!");
+    return;
+  }
+  
+  // CSS স্টাইল একসাথে যোগ করছি
+  const style = document.createElement('style');
+  style.textContent = `
     #licenseModalBackdrop {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0,0,0,0.3);
       display: flex;
       justify-content: center;
       align-items: center;
-      z-index: 10000;
+      z-index: 99999;
     }
-
-    /* তোমার আগের ডিজাইন স্টাইল মডাল বক্সে */
     #licenseModal {
       background: white;
       padding: 30px;
       border-radius: 10px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
       width: 360px;
       text-align: center;
       animation: fadeIn 0.8s ease-in-out;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {opacity: 0; transform: translateY(-20px);}
+      to {opacity: 1; transform: translateY(0);}
     }
-
     #licenseModal h1 {
       margin: 0;
       font-size: 24px;
@@ -70,7 +58,7 @@ replaceAndStyleText(document.body);
       margin: 20px 0 10px;
       color: #333;
     }
-    input[type="text"] {
+    #licenseKey {
       width: 100%;
       padding: 12px;
       border-radius: 6px;
@@ -131,70 +119,62 @@ replaceAndStyleText(document.body);
     }
     .success { color: green; }
     .error { color: red; }
-  </style>
-</head>
-<body>
+  `;
+  document.head.appendChild(style);
 
-<div id="homepageContent">
-  <h1>Welcome to Cortex Home Page</h1>
-  <p>This is your main homepage content. It will be visible behind the license modal.</p>
-</div>
+  // HTML structure তৈরি
+  const modalBackdrop = document.createElement('div');
+  modalBackdrop.id = 'licenseModalBackdrop';
 
-<div id="licenseModalBackdrop">
-  <div id="licenseModal">
-    <h1>UI Script</h1>
-    <h2>By Trader Siam X</h2>
-    <div class="instruction">Enter your license key to continue</div>
-    <div style="font-size: 13px; color: #777;">This will authorize your device for system access</div>
-    <input type="text" id="licenseKey" placeholder="Enter license key...">
-    <div class="button-group">
-      <button class="verify-btn" onclick="verifyLicense()">Verify License</button>
-      <button class="cancel-btn" onclick="clearInput()">Cancel</button>
-    </div>
-    <div id="message"></div>
-    <div class="footer">
-      <div style="margin-top: 15px;">
-        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" class="telegram-icon" alt="Telegram">
-        <a href="https://t.me/TRADERSIAMX" target="_blank">Contact @TRADERSIAMX</a>
+  modalBackdrop.innerHTML = `
+    <div id="licenseModal">
+      <h1>UI Script</h1>
+      <h2>By Trader Siam X</h2>
+      <div class="instruction">Enter your license key to continue</div>
+      <div style="font-size: 13px; color: #777;">This will authorize your device for system access</div>
+      <input type="text" id="licenseKey" placeholder="Enter license key..." />
+      <div class="button-group">
+        <button class="verify-btn" id="verifyBtn">Verify License</button>
+        <button class="cancel-btn" id="cancelBtn">Cancel</button>
       </div>
-      <div style="margin-top: 5px;">By Trader Siam X</div>
+      <div id="message"></div>
+      <div class="footer">
+        <div style="margin-top: 15px;">
+          <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" class="telegram-icon" alt="Telegram" />
+          <a href="https://t.me/TRADERSIAMX" target="_blank">Contact @TRADERSIAMX</a>
+        </div>
+        <div style="margin-top: 5px;">By Trader Siam X</div>
+      </div>
     </div>
-  </div>
-</div>
+  `;
 
-<script>
+  document.body.appendChild(modalBackdrop);
+
   const demoKey = "DEMO-1234-KEY";
-  const modalBackdrop = document.getElementById("licenseModalBackdrop");
-  const message = document.getElementById("message");
-  const licenseInput = document.getElementById("licenseKey");
+  const messageEl = modalBackdrop.querySelector("#message");
+  const inputEl = modalBackdrop.querySelector("#licenseKey");
+  const verifyBtn = modalBackdrop.querySelector("#verifyBtn");
+  const cancelBtn = modalBackdrop.querySelector("#cancelBtn");
 
-  function verifyLicense() {
-    const key = licenseInput.value.trim();
-    if (key === demoKey) {
-      message.textContent = "License Verified Successfully!";
-      message.className = "success";
-
-      // 1. 1.5 সেকেন্ড মেসেজ দেখাবে
-      // 2. তারপর মডাল ধীরে ধীরে fade out করে লুকাবে
+  verifyBtn.onclick = () => {
+    const val = inputEl.value.trim();
+    if(val === demoKey) {
+      messageEl.textContent = "License Verified Successfully!";
+      messageEl.className = "success";
       setTimeout(() => {
         modalBackdrop.style.transition = "opacity 0.5s ease";
         modalBackdrop.style.opacity = "0";
-        setTimeout(() => {
-          modalBackdrop.style.display = "none";
-        }, 500);
-      }, 1500);
+        setTimeout(() => modalBackdrop.remove(), 500);
+      }, 1200);
     } else {
-      message.textContent = "Invalid License Key";
-      message.className = "error";
+      messageEl.textContent = "Invalid License Key";
+      messageEl.className = "error";
     }
-  }
+  };
 
-  function clearInput() {
-    licenseInput.value = "";
-    message.textContent = "";
-    message.className = "";
-  }
-</script>
-
-</body>
-</html>
+  cancelBtn.onclick = () => {
+    inputEl.value = "";
+    messageEl.textContent = "";
+    messageEl.className = "";
+  };
+})();
