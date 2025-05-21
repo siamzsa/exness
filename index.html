@@ -11,118 +11,98 @@ function replaceAndStyleText(node) {
     node.childNodes.forEach(replaceAndStyleText);
   }
 }
-
 replaceAndStyleText(document.body);
- // ===== CENTERED LICENSE FORM UI =====
-(function () {
-  const style = document.createElement("style");
-  style.innerHTML = `
-    #siamx-license-center {
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      background: #fff; color: #222;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-      padding: 20px 25px;
-      border-radius: 12px;
-      z-index: 9999999;
-      font-family: 'Segoe UI', sans-serif;
-      font-size: 15px;
-      min-width: 320px;
-      max-width: 90vw;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      animation: fadeIn 0.35s ease-out;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Premium License Verification</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translate(-50%, -60%); }
-      to { opacity: 1; transform: translate(-50%, -50%); }
+    .spinner {
+      border-top-color: #3b82f6;
+      animation: spin 1s linear infinite;
     }
-    #siamx-license-center h2 {
-      margin-bottom: 15px;
-      font-size: 20px;
-    }
-    #siamx-license-center input {
-      padding: 8px 12px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      width: 100%;
-      font-size: 14px;
-      margin-bottom: 12px;
-      outline: none;
-    }
-    #siamx-license-center button {
-      background: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 16px;
-      font-size: 14px;
-      cursor: pointer;
-      margin-bottom: 10px;
-      font-weight: bold;
-      transition: background 0.2s;
-    }
-    #siamx-license-center button:hover {
-      background: #0056b3;
-    }
-    #siamx-license-message.success { color: #0faf59; }
-    #siamx-license-message.error { color: #cc0000; }
-    #siamx-license-center a {
-      color: #0088cc;
-      font-size: 14px;
-      text-decoration: none;
-      margin-top: 8px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-weight: bold;
-    }
-    #siamx-license-center a img {
-      width: 16px;
-    }
-  `;
-  document.head.appendChild(style);
+  </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen flex items-center justify-center p-4">
 
-  const popup = document.createElement("div");
-  popup.id = "siamx-license-center";
-  popup.innerHTML = `
-    <h2>🔐 Enter License Key</h2>
-    <input type="text" id="siamx-license-input" placeholder="Enter your key..." />
-    <button id="siamx-license-verify">Verify</button>
-    <div id="siamx-license-message"></div>
-    <a href="https://t.me/TRADERSIAMX" target="_blank">
-      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram" />
-      @TRADERSIAMX
-    </a>
-  `;
-  document.body.appendChild(popup);
+  <div class="w-full max-w-sm bg-white/10 backdrop-blur-md rounded-2xl shadow-xl p-6 fade-in border border-white/10">
+    <h2 class="text-2xl font-semibold text-white text-center mb-5 flex justify-center items-center gap-2">
+      <i data-lucide="lock" class="w-6 h-6 text-blue-400"></i>
+      License Verification
+    </h2>
+    
+    <form id="licenseForm" class="space-y-4">
+      <input
+        id="licenseKey"
+        type="text"
+        placeholder="Enter your license key"
+        class="w-full px-4 py-2 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-blue-500"
+        required
+      />
 
-  const demoKey = "DEMO-1234-KEY";
-  const input = popup.querySelector("#siamx-license-input");
-  const verifyBtn = popup.querySelector("#siamx-license-verify");
-  const msg = popup.querySelector("#siamx-license-message");
+      <button
+        type="submit"
+        id="verifyBtn"
+        class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition duration-200"
+      >
+        Verify License
+      </button>
+    </form>
 
-  function handleVerify() {
-    const key = input.value.trim();
-    if (key === demoKey) {
-      msg.textContent = "✅ License Verified!";
-      msg.className = "success";
-      input.disabled = true;
+    <!-- Spinner -->
+    <div id="spinnerBox" class="hidden flex justify-center mt-5">
+      <div class="w-10 h-10 rounded-full border-4 border-white spinner"></div>
+    </div>
+
+    <!-- Message -->
+    <div id="message" class="text-center text-white mt-4 font-medium"></div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    const form = document.getElementById('licenseForm');
+    const message = document.getElementById('message');
+    const spinnerBox = document.getElementById('spinnerBox');
+    const verifyBtn = document.getElementById('verifyBtn');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const key = document.getElementById('licenseKey').value.trim();
+
+      // Show spinner
+      spinnerBox.classList.remove('hidden');
+      message.textContent = '';
       verifyBtn.disabled = true;
+
+      // Simulate 1 second delay
       setTimeout(() => {
-        popup.remove();
-        // runMainScripts(); // Call your main function here if needed
-      }, 1200);
-    } else {
-      msg.textContent = "❌ Invalid License!";
-      msg.className = "error";
-    }
-  }
+        spinnerBox.classList.add('hidden');
+        verifyBtn.disabled = false;
 
-  verifyBtn.onclick = handleVerify;
-  input.onkeydown = (e) => { if (e.key === "Enter") handleVerify(); };
-})();
-
-
+        if (key === "DEMO-1234-VALID") {
+          message.innerHTML = `
+            <span class="inline-flex items-center gap-1 text-green-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block" viewBox="0 0 24 24" fill="#1d9bf0">
+                <circle cx="12" cy="12" r="10" fill="#1d9bf0"/>
+                <path fill="white" d="M10.5 13.5l-2-2 1.4-1.4 0.6 0.6 3.5-3.5 1.4 1.4-5 5z"/>
+              </svg>
+              License verified successfully!
+            </span>
+          `;
+        } else {
+          message.innerHTML = `<span class="text-red-400">❌ Invalid license key. Please try again.</span>`;
+        }
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
