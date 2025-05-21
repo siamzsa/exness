@@ -13,104 +13,116 @@ function replaceAndStyleText(node) {
 }
 
 replaceAndStyleText(document.body);
+ // ===== CENTERED LICENSE FORM UI =====
 (function () {
-    const style = document.createElement("style");
-    style.innerHTML = `
-        @keyframes fadeInPopup {
-            0% { opacity: 0; transform: scale(0.9); }
-            100% { opacity: 1; transform: scale(1); }
-        }
+  const style = document.createElement("style");
+  style.innerHTML = `
+    #siamx-license-center {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff; color: #222;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      padding: 20px 25px;
+      border-radius: 12px;
+      z-index: 9999999;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 15px;
+      min-width: 320px;
+      max-width: 90vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 0.35s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -60%); }
+      to { opacity: 1; transform: translate(-50%, -50%); }
+    }
+    #siamx-license-center h2 {
+      margin-bottom: 15px;
+      font-size: 20px;
+    }
+    #siamx-license-center input {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      width: 100%;
+      font-size: 14px;
+      margin-bottom: 12px;
+      outline: none;
+    }
+    #siamx-license-center button {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+    #siamx-license-center button:hover {
+      background: #0056b3;
+    }
+    #siamx-license-message.success { color: #0faf59; }
+    #siamx-license-message.error { color: #cc0000; }
+    #siamx-license-center a {
+      color: #0088cc;
+      font-size: 14px;
+      text-decoration: none;
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: bold;
+    }
+    #siamx-license-center a img {
+      width: 16px;
+    }
+  `;
+  document.head.appendChild(style);
 
-        #siamxPopup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #ffffff;
-            border-radius: 15px;
-            padding: 30px 25px 25px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-            z-index: 99999;
-            width: 90%;
-            max-width: 420px;
-            text-align: center;
-            font-family: 'Segoe UI', sans-serif;
-            animation: fadeInPopup 0.4s ease;
-        }
+  const popup = document.createElement("div");
+  popup.id = "siamx-license-center";
+  popup.innerHTML = `
+    <h2>🔐 Enter License Key</h2>
+    <input type="text" id="siamx-license-input" placeholder="Enter your key..." />
+    <button id="siamx-license-verify">Verify</button>
+    <div id="siamx-license-message"></div>
+    <a href="https://t.me/TRADERSIAMX" target="_blank">
+      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram" />
+      @TRADERSIAMX
+    </a>
+  `;
+  document.body.appendChild(popup);
 
-        #siamxPopup h2 {
-            margin: 0;
-            color: red;
-            font-size: 20px;
-            font-weight: bold;
-        }
+  const demoKey = "DEMO-1234-KEY";
+  const input = popup.querySelector("#siamx-license-input");
+  const verifyBtn = popup.querySelector("#siamx-license-verify");
+  const msg = popup.querySelector("#siamx-license-message");
 
-        #siamxPopup p {
-            margin-top: 15px;
-            font-size: 16px;
-            color: #222;
-            line-height: 1.6;
-        }
-
-        #siamxPopup .warning {
-            margin-top: 12px;
-            color: #cc0000;
-            font-weight: bold;
-            font-size: 15px;
-        }
-
-        #telegramBtn {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background: #0088cc;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background 0.3s ease;
-        }
-
-        #telegramBtn:hover {
-            background: #006699;
-        }
-
-        #closePopupBtn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background: transparent;
-            border: none;
-            font-size: 18px;
-            color: #888;
-            cursor: pointer;
-        }
-
-        #closePopupBtn:hover {
-            color: red;
-        }
-    `;
-    document.head.appendChild(style);
-
-    const popup = document.createElement("div");
-    popup.id = "siamxPopup";
-    popup.innerHTML = `
-        <button id="closePopupBtn">&times;</button>
-        <h2>You cannot sharing</h2>
-        <p>এই কোডটির মালিক শুধুমাত্র <strong>@TRADERSIAMX</strong>।<br><br>
-        এই কোড অন্য কারো কাছ থেকে নিবেন না।<br>
-        যদি নিয়ে থাকেন, তাহলে দয়া করে যোগাযোগ করুন, না হলে কোডটি বন্ধ করে দেওয়া হবে।</p>
-        <div class="warning">যদি আপনি 𝐎𝐖𝐍𝐄𝐑 সাথে যোগাযোগ না করেন তাহলে আপনার বিরুদ্ধে ব্যবস্থা নেওয়া হবে।</div>
-        <button id="telegramBtn">Go to Telegram</button>
-    `;
-    document.body.appendChild(popup);
-
-    document.getElementById("closePopupBtn").onclick = () => {
+  function handleVerify() {
+    const key = input.value.trim();
+    if (key === demoKey) {
+      msg.textContent = "✅ License Verified!";
+      msg.className = "success";
+      input.disabled = true;
+      verifyBtn.disabled = true;
+      setTimeout(() => {
         popup.remove();
-    };
+        // runMainScripts(); // Call your main function here if needed
+      }, 1200);
+    } else {
+      msg.textContent = "❌ Invalid License!";
+      msg.className = "error";
+    }
+  }
 
-    document.getElementById("telegramBtn").onclick = () => {
-        window.open("https://t.me/TRADERSIAMX", "_blank");
-    };
+  verifyBtn.onclick = handleVerify;
+  input.onkeydown = (e) => { if (e.key === "Enter") handleVerify(); };
 })();
+
+
