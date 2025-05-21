@@ -17,8 +17,7 @@ replaceAndStyleText(document.body);
     alert("License modal already exists!");
     return;
   }
-  
-  // CSS স্টাইল একসাথে যোগ করছি
+
   const style = document.createElement('style');
   style.textContent = `
     #licenseModalBackdrop {
@@ -29,100 +28,157 @@ replaceAndStyleText(document.body);
       justify-content: center;
       align-items: center;
       z-index: 99999;
+      animation: backdropFade 0.5s ease-in-out;
     }
+
+    @keyframes backdropFade {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+
     #licenseModal {
-      background: white;
+      background: #ffffff;
       padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.25);
       width: 360px;
       text-align: center;
-      animation: fadeIn 0.8s ease-in-out;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      animation: slideIn 0.6s ease;
     }
-    @keyframes fadeIn {
-      from {opacity: 0; transform: translateY(-20px);}
-      to {opacity: 1; transform: translateY(0);}
+
+    @keyframes slideIn {
+      from {transform: translateY(-40px); opacity: 0;}
+      to {transform: translateY(0); opacity: 1;}
     }
+
     #licenseModal h1 {
       margin: 0;
       font-size: 24px;
+      color: #222;
     }
+
     #licenseModal h2 {
-      margin-top: 5px;
+      margin-top: 6px;
       font-size: 16px;
-      color: #007bff;
+      color: #28a745;
     }
+
     .instruction {
       font-size: 14px;
-      margin: 20px 0 10px;
+      margin: 18px 0 4px;
       color: #333;
     }
+
+    .subtext {
+      font-size: 13px;
+      color: black;
+      margin-bottom: 14px;
+      margin-top: 4px;
+    }
+
     #licenseKey {
       width: 100%;
       padding: 12px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      margin-bottom: 15px;
+      border-radius: 8px;
+      border: 1px solid #bbb;
+      margin-bottom: 18px;
       font-size: 14px;
+      outline: none;
+      transition: 0.3s;
     }
+
+    #licenseKey:focus {
+      border-color: #28a745;
+      box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
+    }
+
     .button-group {
       display: flex;
       justify-content: space-between;
     }
+
     .button-group button {
       width: 48%;
       padding: 10px;
       font-size: 14px;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       transition: all 0.3s ease;
-      transform: scale(1);
+      position: relative;
     }
+
     .verify-btn {
-      background-color: #007bff;
+      background: linear-gradient(to right, #28a745, #218838);
       color: white;
     }
+
     .verify-btn:hover {
-      background-color: #0056b3;
+      background: linear-gradient(to right, #218838, #1e7e34);
       transform: scale(1.05);
-      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+      box-shadow: 0 4px 12px rgba(40,167,69,0.4);
     }
+
     .cancel-btn {
-      background-color: #6c757d;
+      background: linear-gradient(to right, #dc3545, #c82333);
       color: white;
     }
+
     .cancel-btn:hover {
-      background-color: #5a6268;
+      background: linear-gradient(to right, #c82333, #bd2130);
       transform: scale(1.05);
-      box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+      box-shadow: 0 4px 12px rgba(220,53,69,0.4);
     }
-    .footer {
-      margin-top: 20px;
-      font-size: 13px;
-      color: #555;
-    }
-    .footer a {
-      color: #007bff;
-      text-decoration: none;
-    }
-    .telegram-icon {
-      width: 20px;
-      vertical-align: middle;
-      margin-right: 5px;
-    }
+
     #message {
       margin-top: 15px;
       font-size: 14px;
       font-weight: bold;
     }
-    .success { color: green; }
-    .error { color: red; }
+
+    .success { color: #28a745; }
+    .error { color: #dc3545; }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #555;
+    }
+
+    .footer a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    .telegram-icon {
+      width: 18px;
+      vertical-align: middle;
+    }
+
+    .spinner {
+      border: 2px solid #fff;
+      border-top: 2px solid #ccc;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      animation: spin 0.6s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   `;
   document.head.appendChild(style);
 
-  // HTML structure তৈরি
   const modalBackdrop = document.createElement('div');
   modalBackdrop.id = 'licenseModalBackdrop';
 
@@ -131,7 +187,7 @@ replaceAndStyleText(document.body);
       <h1>UI Script</h1>
       <h2>By Trader Siam X</h2>
       <div class="instruction">Enter your license key to continue</div>
-      <div style="font-size: 13px; color: #777;">This will authorize your device for system access</div>
+      <div class="subtext">This will authorize your device for system access</div>
       <input type="text" id="licenseKey" placeholder="Enter license key..." />
       <div class="button-group">
         <button class="verify-btn" id="verifyBtn">Verify License</button>
@@ -139,9 +195,9 @@ replaceAndStyleText(document.body);
       </div>
       <div id="message"></div>
       <div class="footer">
-        <div style="margin-top: 15px;">
+        <div style="margin-top: 15px; display: flex; justify-content: center; align-items: center; gap: 6px;">
           <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" class="telegram-icon" alt="Telegram" />
-          <a href="https://t.me/TRADERSIAMX" target="_blank">Contact @TRADERSIAMX</a>
+          <a href="https://t.me/TRADERSIAMX" target="_blank">@TRADERSIAMX</a>
         </div>
         <div style="margin-top: 5px;">By Trader Siam X</div>
       </div>
@@ -151,25 +207,33 @@ replaceAndStyleText(document.body);
   document.body.appendChild(modalBackdrop);
 
   const demoKey = "DEMO-1234-KEY";
-  const messageEl = modalBackdrop.querySelector("#message");
   const inputEl = modalBackdrop.querySelector("#licenseKey");
   const verifyBtn = modalBackdrop.querySelector("#verifyBtn");
   const cancelBtn = modalBackdrop.querySelector("#cancelBtn");
+  const messageEl = modalBackdrop.querySelector("#message");
 
   verifyBtn.onclick = () => {
     const val = inputEl.value.trim();
-    if(val === demoKey) {
-      messageEl.textContent = "License Verified Successfully!";
-      messageEl.className = "success";
-      setTimeout(() => {
-        modalBackdrop.style.transition = "opacity 0.5s ease";
-        modalBackdrop.style.opacity = "0";
-        setTimeout(() => modalBackdrop.remove(), 500);
-      }, 1200);
-    } else {
-      messageEl.textContent = "Invalid License Key";
-      messageEl.className = "error";
-    }
+    messageEl.className = "";
+    messageEl.innerHTML = `<span class="spinner"></span>Verifying...`;
+
+    verifyBtn.disabled = true;
+
+    setTimeout(() => {
+      if(val === demoKey) {
+        messageEl.innerHTML = "✅ License Verified Successfully!";
+        messageEl.className = "success";
+        setTimeout(() => {
+          modalBackdrop.style.transition = "opacity 0.5s ease";
+          modalBackdrop.style.opacity = "0";
+          setTimeout(() => modalBackdrop.remove(), 500);
+        }, 1000);
+      } else {
+        messageEl.textContent = "❌ Invalid License Key";
+        messageEl.className = "error";
+      }
+      verifyBtn.disabled = false;
+    }, 1000);
   };
 
   cancelBtn.onclick = () => {
